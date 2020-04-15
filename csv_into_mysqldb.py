@@ -22,11 +22,15 @@ cursor.execute("LOAD DATA LOCAL INFILE '/home/rabowl2/505final/kyzipdistance.csv
 mydb.commit()
 
 # create table
-cursor.execute("CREATE TABLE hospital_data (hospital_id varchar(9),hospital_zip varchar(5),beds int)")
+cursor.execute("CREATE TABLE hospital_data (hospital_id varchar(9),hospital_zip varchar(5),beds_available int)")
 mydb.commit()
 
 #import csv
 cursor.execute("LOAD DATA LOCAL INFILE '/home/rabowl2/505final/hospitals.csv' INTO TABLE hospital_data FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES")
+mydb.commit()
+
+#add column for beds occupied
+cursor.execute("ALTER TABLE hospital_data ADD bed_occupied int DEFAULT (0)")
 mydb.commit()
 
 # disconnect from server 
