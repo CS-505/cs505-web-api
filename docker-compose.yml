@@ -24,7 +24,7 @@ services:
       - .env
     image: mysql:8.0.19
     ports:
-      - 3306:3006
-    volumes:
-      - db_data:/var/lib/mysql
+      - 3306:3306
+    volumes_from:
+      - dbdata
     restart: always

@@ -12,7 +12,7 @@ POSTGRES = {
     "user": os.getenv("MYSQL_USER", "root"),
     "pw": os.getenv("MYSQL_PASSWORD", ""),
     "host": DB_CONTAINER,
-    "port": os.getenv("APPLICATION_MYSQL_PORT", 3032),
+    "port": os.getenv("APPLICATION_MYSQL_PORT", 3306),
     "db": os.getenv("MYSQL_DATABASE", "mysql"),
 }
 
