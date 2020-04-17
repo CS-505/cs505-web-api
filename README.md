@@ -8,11 +8,7 @@
 1. [Getting Started](#getting-started)
 1. [Commands](#commands)
 1. [Database](#database)
-1. [Application Structure](#application-structure)
 1. [Development](#development)
-1. [Testing](#testing)
-1. [Lint](#lint)
-1. [Format](#format)
 1. [Swagger](#swagger)
 
 ## Dependencies
@@ -56,16 +52,8 @@ While developing, you will probably rely mostly on `make server.start`; however,
 | `database.migrate`   | Generate a database migration file using alembic, based on your model files. |
 | `database.upgrade`   | Run the migrations until your database is up to date.                        |
 | `database.downgrade` | Downgrade your database by one migration.                                    |
-| `test`               | Run unit tests with pytest in its own container.                             |
-| `test.coverage`      | Run test coverage using pytest-cov.                                          |
-| `test.lint`          | Run flake8 on the `src` and `test` directories.                              |
-| `test.safety`        | Run safety to check if your vendors have security issues.                    |
-| `format.black`       | Format python files using Black.                                             |
-| `format.isort`       | Order python imports using isort.                                            |
 
 ## Database
-
-
 
 Locally, you can connect to your database using :
 
