@@ -13,4 +13,5 @@ class ResetResource(Resource):
     @staticmethod
     @swag_from("../swagger/management_reset/GET.yml")
     def get():
+        
         return jsonify({"status": "this works!"})
