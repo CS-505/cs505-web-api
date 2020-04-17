@@ -6,6 +6,7 @@ services:
       - .env
     image: python:3.7
     working_dir: /mnt
+    restart: always
     volumes:
       - .:/mnt
     depends_on:
