@@ -17,11 +17,11 @@ server = Flask(__name__)
 
 server.config["SWAGGER"] = {
     "swagger_version": "2.0",
-    "title": "Application",
+    "title": "COVID-19 Tracker",
     "specs": [
         {
             "version": "0.0.1",
-            "title": "Application",
+            "title": "CS 505 Final Project: COVID-19 Tracker",
             "endpoint": "spec",
             "route": "/application/spec",
             "rule_filter": lambda rule: True,  # all in
