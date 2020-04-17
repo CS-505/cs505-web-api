@@ -11,7 +11,7 @@ services:
     depends_on:
       - db
     ports:
-      - 3000:3000
+      - 80:3000
     command: python src/server.py
 
   dbdata:
@@ -23,6 +23,7 @@ services:
     env_file:
       - .env
     image: mysql:8.0.19
+    command: --default-authentication-plugin=mysql_native_password
     ports:
       - 3306:3306
     volumes_from:

@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 from flasgger import Swagger
 from flask import Flask
 from flask.blueprints import Blueprint

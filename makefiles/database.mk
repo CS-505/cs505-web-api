@@ -3,7 +3,7 @@
 
 
 database.connect: ## Connect to database
-	docker-compose exec db mysql --user=root --password database
+	docker-compose exec db mysql -uroot -p
 
 database.migrate: ## Create alembic migration file
 	docker-compose run --rm server python src/manage.py db migrate

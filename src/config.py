@@ -8,7 +8,7 @@ PORT = int(os.getenv("APPLICATION_PORT", "3000"))
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 DB_CONTAINER = os.getenv("APPLICATION_DB_CONTAINER", "db")
-POSTGRES = {
+MYSQL = {
     "user": os.getenv("MYSQL_USER", "root"),
     "pw": os.getenv("MYSQL_PASSWORD", ""),
     "host": DB_CONTAINER,
@@ -16,7 +16,7 @@ POSTGRES = {
     "db": os.getenv("MYSQL_DATABASE", "mysql"),
 }
 
-DB_URI = "mysql+mysqldb://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s" % POSTGRES
+DB_URI = "mysql+mysqldb://%(user)s:%(pw)s@%(host)s:%(port)s/%(db)s" % MYSQL
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
