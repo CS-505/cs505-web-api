@@ -1,0 +1,12 @@
+Search by mrn patients location (home or specific hospital)
+---
+tags:
+  - Logical and Operational - Get Patient
+parameters:
+  - name: mrn
+    in: path
+    type: string
+    description: medical record number
+responses:
+  200:
+    description: Patient Location
