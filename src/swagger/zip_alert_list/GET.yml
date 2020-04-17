@@ -1,7 +1,7 @@
 Alert on zipcode that is in alert state based on growth of cases
 ---
 tags:
-  - Real-time Reporting - Zip Alert List
+  - Real-time Reporting
 responses:
   200:
     description: List of zipcodes in alert status

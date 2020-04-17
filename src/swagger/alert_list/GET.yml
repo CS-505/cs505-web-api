@@ -1,7 +1,7 @@
 Alert on statewide when at least five zipcodes are in alert state
 ---
 tags:
-  - Real-time Reporting - Alert List
+  - Real-time Reporting
 responses:
   200:
     description: State Status

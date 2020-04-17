@@ -1,7 +1,7 @@
 Resets the database
 ---
 tags:
-  - Management - Reset
+  - Management
 responses:
   200:
     description: Reset Data

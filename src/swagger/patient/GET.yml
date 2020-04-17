@@ -1,7 +1,7 @@
 Search by mrn patients location (home or specific hospital)
 ---
 tags:
-  - Logical and Operational - Get Patient
+  - Logical and Operational
 parameters:
   - name: mrn
     in: path

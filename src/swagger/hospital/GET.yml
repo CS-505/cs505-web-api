@@ -1,7 +1,7 @@
 Report hospital patient numbers
 ---
 tags:
-  - Logical and Operational - Get Hospital
+  - Logical and Operational
 parameters:
   - name: id
     in: path

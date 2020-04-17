@@ -1,7 +1,7 @@
 Statewide positive and negative test counter
 ---
 tags:
-  - Real-time Reporting - Test Count
+  - Real-time Reporting
 responses:
   200:
     description: Count of positive and negative tests

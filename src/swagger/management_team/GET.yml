@@ -1,7 +1,7 @@
 Return an Team information
 ---
 tags:
-  - Management - Team
+  - Management
 responses:
   200:
     description: Team Informartion
