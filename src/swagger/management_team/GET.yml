@@ -1,0 +1,7 @@
+Return an user key information based on his name
+---
+tags:
+  - Team
+responses:
+  200:
+    description: Team Informartion
