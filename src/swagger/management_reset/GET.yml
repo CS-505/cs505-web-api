@@ -1,0 +1,7 @@
+Resets the database
+---
+tags:
+  - Management - Reset
+responses:
+  200:
+    description: Reset Data
