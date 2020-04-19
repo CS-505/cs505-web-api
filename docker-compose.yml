@@ -4,7 +4,7 @@ services:
   server:
     env_file:
       - .env
-    image: python:3.7
+    build: ./docker/
     working_dir: /mnt
     restart: always
     volumes:
