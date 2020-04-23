@@ -44,3 +44,8 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     server.run(host=config.HOST, port=config.PORT)
+
+#this isn't working for some reason
+"""enables loading local data client side"""
+db.session.execute("SET GLOBAL local_infile = 'ON'") 
+db.session.commit()

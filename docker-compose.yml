@@ -24,7 +24,7 @@ services:
     env_file:
       - .env
     image: mysql:8.0.19
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --secure_file_priv=""
     ports:
       - 3306:3306
     volumes_from:
