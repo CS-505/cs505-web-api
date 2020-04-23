@@ -6,11 +6,13 @@ from .abc import BaseModel, MetaBaseModel
 
 
 class ZipCodeDistance(db.Model, BaseModel, metaclass=MetaBaseModel):
+
     """ The Zipcode Distance model """
 
     __tablename__ = "zipcode_distance"
 
-    zip_to = db.Column(db.String(5), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True)
+    zip_to = db.Column(db.String(5))
     zip_from = db.Column(db.String(5))
     distance = db.Column(db.Numeric(20,15))
 
