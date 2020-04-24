@@ -1,12 +1,10 @@
-@App:name('TestExecutionPlan')
-@App:description('Description of the plan')
+@App:name('COVID 19 Tracker')
+@App:description('Trackers COVID 19 Cases')
 @App:statistics(reporter = "console")
 
 @source(type = 'rabbitmq', uri = "amqp://student:student01@128.163.202.61/patient_feed", exchange.name = "patient_data", exchange.type = "topic", routing.key = "patient.info", 
 	@map(type = 'json'))
 define stream PatientStream (first_name string, last_name string, mrn string, zip_code string, patient_status_code string);
-
---define stream ZipAlertInsertOrUpdateStream (zipcode string, count int);
 
 @store(type = 'rdbms', jdbc.url = "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=false",
 username = "root",
@@ -15,23 +13,17 @@ jdbc.driver.name = "com.mysql.jdbc.Driver")
 @index("zipcode")
 define table ZipAlert (zipcode string, last_count long, on_alert bool);
 
-/**
-from PatientStream
-select zipcode, convert(0, 'long') as last_count, true as on_alert
-update or insert into ZipAlert ON ZipAlert.zipcode;
-**/
-
 
 @info(name='ZipAlertWindowQuery')
-from PatientStream#window.timeBatch(5 sec)
+from PatientStream#window.timeBatch(15 sec)
 select zip_code as zipcode, count() as count
 group by zip_code
 insert into ZipAlertInsertOrUpdateStream;
 
 
-@info(name = 'query4')
-from ZipAlertInsertOrUpdateStream
-select zipcode, count as last_count, true as on_alert  
+@info(name = 'SetZipAlert')
+from ZipAlertInsertOrUpdateStream as s left outer join ZipAlert as alertTable
+select s.zipcode,  s.count as last_count, (s.count / coalesce(alertTable.last_count, cast(1, 'long'))) > 2 as on_alert  
 update or 
 insert 
 into ZipAlert 
