@@ -4,28 +4,37 @@
 
 @source(type = 'rabbitmq', uri = "amqp://student:student01@128.163.202.61/patient_feed", exchange.name = "patient_data", exchange.type = "topic", routing.key = "patient.info", 
 	@map(type = 'json'))
-define stream BarStream (first_name string, last_name string, mrn string);
+define stream PatientStream (first_name string, last_name string, mrn string, zip_code string, patient_status_code string);
+
+--define stream ZipAlertInsertOrUpdateStream (zipcode string, count int);
 
 @store(type = 'rdbms', jdbc.url = "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=false",
 username = "root",
 password = "password",
 jdbc.driver.name = "com.mysql.jdbc.Driver")
-@index("first_name")
-define table test (first_name string, last_name string);
+@index("zipcode")
+define table ZipAlert (zipcode string, last_count long, on_alert bool);
 
-@store(type = 'rdbms', jdbc.url = "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=false",
-username = "root",
-password = "password",
-jdbc.driver.name = "com.mysql.jdbc.Driver")
-@index("first_name")
-define table test2 (first_name string, mrn string);
+/**
+from PatientStream
+select zipcode, convert(0, 'long') as last_count, true as on_alert
+update or insert into ZipAlert ON ZipAlert.zipcode;
+**/
 
-@info(name = 'query1')
-from BarStream 
-select first_name, last_name 
-insert into test;
 
-@info(name = 'query')
-from BarStream 
-select first_name, mrn 
-insert into test2;
+@info(name='ZipAlertWindowQuery')
+from PatientStream#window.timeBatch(5 sec)
+select zip_code as zipcode, count() as count
+group by zip_code
+insert into ZipAlertInsertOrUpdateStream;
+
+
+@info(name = 'query4')
+from ZipAlertInsertOrUpdateStream
+select zipcode, count as last_count, true as on_alert  
+update or 
+insert 
+into ZipAlert 
+ 	on ZipAlert.zipcode == zipcode;
+
+ 	
