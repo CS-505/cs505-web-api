@@ -1,2 +1,31 @@
-@App:name("SiddhiApp")
-@App:description("Description of the plan")
+@App:name('TestExecutionPlan')
+@App:description('Description of the plan')
+@App:statistics(reporter = "console")
+
+@source(type = 'rabbitmq', uri = "amqp://student:student01@128.163.202.61/patient_feed", exchange.name = "patient_data", exchange.type = "topic", routing.key = "patient.info", 
+	@map(type = 'json'))
+define stream BarStream (first_name string, last_name string, mrn string);
+
+@store(type = 'rdbms', jdbc.url = "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=false",
+username = "root",
+password = "password",
+jdbc.driver.name = "com.mysql.jdbc.Driver")
+@index("first_name")
+define table test (first_name string, last_name string);
+
+@store(type = 'rdbms', jdbc.url = "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=false",
+username = "root",
+password = "password",
+jdbc.driver.name = "com.mysql.jdbc.Driver")
+@index("first_name")
+define table test2 (first_name string, mrn string);
+
+@info(name = 'query1')
+from BarStream 
+select first_name, last_name 
+insert into test;
+
+@info(name = 'query')
+from BarStream 
+select first_name, mrn 
+insert into test2;
