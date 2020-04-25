@@ -7,6 +7,7 @@ from flask.json import jsonify
 from flask_restful import Resource
 from repositories import ZipCodeRepository
 from repositories import HospitalRepository
+from repositories import PatientRepository 
 
 class ResetResource(Resource):
     """ Verbs relative to the data management """
@@ -17,6 +18,7 @@ class ResetResource(Resource):
 
         ZipCodeRepository.reset_db()
         HospitalRepository.reset_db()
+        PatientRepository.reset_db()
         ZipCodeRepository.import_csv()
         HospitalRepository.import_csv()
         
