@@ -1,4 +1,4 @@
-@App:name('COVID 19 Tracker')
+@App:name('RabbitMQ')
 @App:description('Trackers COVID 19 Cases')
 @App:statistics(reporter = "console")
 

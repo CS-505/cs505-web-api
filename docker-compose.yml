@@ -40,3 +40,8 @@ services:
       - ./siddhi/workspace:/home/siddhi_user/siddhi-tooling/wso2/tooling/deployment/workspace
       - ./siddhi/jars:/home/siddhi_user/siddhi-tooling/jars
       - ./siddhi/bundles:/home/siddhi_user/siddhi-tooling/bundles
+  
+  siddhi-runner:
+    build: ./siddhi/
+
+  
