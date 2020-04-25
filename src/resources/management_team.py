@@ -7,6 +7,7 @@ from flask.json import jsonify
 from flask_restful import Resource
 
 
+
 class TeamResource(Resource):
     """ Verbs relative to the team management """
 

@@ -15,8 +15,7 @@ class HospitalResource(Resource):
     @swag_from("../swagger/hospital/GET.yml")
     def get(id):
         hospital = HospitalRepository.query_by_id(id)
-
-        #better messaging for result not found?
+        
         if (hospital == None):
             return jsonify("invalid id")
         else:
