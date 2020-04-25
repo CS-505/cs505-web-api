@@ -10,7 +10,7 @@ server.debug = config.DEBUG
 server.config["SQLALCHEMY_DATABASE_URI"] = config.DB_URI
 db.init_app(server)
 
-migrate = Migrate(server, db)
+migrate = Migrate(server, db, compare_type=True)
 manager = Manager(server)
 manager.add_command("db", MigrateCommand)
 

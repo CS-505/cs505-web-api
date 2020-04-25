@@ -12,7 +12,7 @@ class ZipAlert(db.Model, BaseModel, metaclass=MetaBaseModel):
     __tablename__ = "zip_alert"
 
     zipcode = db.Column(db.String(5), primary_key=True)
-    current_count = db.Column(db.Integer())
+    current_count = db.Column(db.BigInteger())
     on_alert = db.Column(db.Boolean())
 
     def __init__(self, zipcode, current_count, on_alert):
