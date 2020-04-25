@@ -5,6 +5,7 @@ Define the REST verbs relative to the test_count
 from flasgger import swag_from
 from flask.json import jsonify
 from flask_restful import Resource
+from repositories import PatientRepository
 
 
 class TestCountResource(Resource):
@@ -13,4 +14,7 @@ class TestCountResource(Resource):
     @staticmethod
     @swag_from("../swagger/test_count/GET.yml")
     def get():
-        return jsonify({"status": "this works!"})
+        pos_count = PatientRepository.count_pos()
+        neg_count = PatientRepository.count_neg()
+                
+        return jsonify(positive_test=pos_count, negative_test=neg_count)
