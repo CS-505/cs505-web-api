@@ -9,7 +9,7 @@ class ZipAlert(db.Model, BaseModel, metaclass=MetaBaseModel):
 
     """ The Zipcode Distance model """
 
-    __tablename__ = "zipcode_distance"
+    __tablename__ = "zip_alert"
 
     zipcode = db.Column(db.String(5), primary_key=True)
     current_count = db.Column(db.Integer())
