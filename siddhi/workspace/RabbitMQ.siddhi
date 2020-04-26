@@ -6,17 +6,12 @@
 	@map(type = 'json'))
 define stream PatientStream (first_name string, last_name string, mrn string, zip_code string, patient_status_code string);
 
-@store(type = 'rdbms', jdbc.url = "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=False",
-username = "root",password = "password",jdbc.driver.name = "com.mysql.jdbc.Driver",table.name = "zip_alert")@index("zipcode")
+@store(type = 'rdbms', datasource = 'DATABASE' ,table.name = "zip_alert")@index("zipcode")
 define table ZipAlert (zipcode string, current_count long, on_alert bool);
 
-@store(type = 'rdbms', jdbc.url = "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=False",
-username = "root",password = "password",jdbc.driver.name = "com.mysql.jdbc.Driver",table.name = "patient_data")@index("mrn")
-define table Patient (mrn string, location_code string, is_positive bool);
-
-@store(type = 'rdbms', datasource='DATABASE')
-@index("hospital_id")
-define table hospital_data (hospital_id string, hospital_zip string);
+@store(type = 'rdbms', datasource = 'DATABASE',table.name = "patient_data")
+@index("mrn")
+define table Patient (mrn string, location_code string, is_positive int);
 
 @info(name = 'ZipAlertWindowQuery')
 from PatientStream#window.timeBatch(15 sec) 
@@ -26,14 +21,19 @@ insert into ZipAlertInsertOrUpdateStream;
 
  
  
-@info(name = 'TestedPatientsStayHome')
-from PatientStream[patient_status_code == '1' or patient_status_code == '2' or patient_status_code == '4'] 
-select mrn, '0' as location_code, ifThenElse(patient_status_code == '1' or patient_status_code == '4', false, true) as is_positive 
+@info(name = 'StayHomePatients')
+from PatientStream[patient_status_code == '1' or patient_status_code == '2' or patient_status_code == '4' or patient_status_code == '0'] 
+select mrn, '0' as location_code, ifThenElse(patient_status_code == '1' or patient_status_code == '4', 0, 1) as is_positive 
 insert into Patient;
 
-@info(name = 'query')
+@info(name = 'CriticalPatients')
 from PatientStream[patient_status_code == '6']#rdbms:query('DATABASE', 'hospital_id string', 'SELECT hospital_id FROM hospital_data LIMIT 1')
-select mrn, hospital_id as location_code, true as is_positive
+select mrn, hospital_id as location_code, 1 as is_positive 
+insert into Patient;
+
+@info(name = 'SeekTreatmentPatients')
+from PatientStream[patient_status_code == '3' or patient_status_code == '5']#rdbms:query('DATABASE', 'hospital_id string', 'SELECT hospital_id FROM hospital_data LIMIT 1')
+select mrn, hospital_id as location_code, 1 as is_positive 
 insert into Patient;
 
 @info(name = 'SetZipAlert')
