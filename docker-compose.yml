@@ -35,13 +35,12 @@ services:
     image: siddhiio/siddhi-tooling:5.1.0
     ports:
       - 9390:9390
-    volumes: 
+    command: -Dconfig=/artifacts/configurations.yaml
+    volumes:
       - ./siddhi/configs:/artifacts
       - ./siddhi/workspace:/home/siddhi_user/siddhi-tooling/wso2/tooling/deployment/workspace
       - ./siddhi/jars:/home/siddhi_user/siddhi-tooling/jars
       - ./siddhi/bundles:/home/siddhi_user/siddhi-tooling/bundles
-  
+
   siddhi-runner:
     build: ./siddhi/
-
-  
