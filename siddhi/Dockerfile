@@ -26,7 +26,7 @@ ARG HOST_APPS_DIR=./workspace
 ARG JARS=${RUNTIME_SERVER_HOME}/jars
 ARG BUNDLES=${RUNTIME_SERVER_HOME}/bundles
 ARG APPS=${RUNTIME_SERVER_HOME}/deployment/siddhi-files
-ARG CONFIG_FILE=./configurations.yaml
+ARG CONFIG_FILE=./configs/configurations.yaml
 ARG CONFIG_FILE_PATH=${HOME}/configurations.yaml
 
 # copy bundles & jars to the siddhi-runner distribution
