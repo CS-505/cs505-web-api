@@ -50,7 +50,7 @@ insert into Patient;
 @info(name = 'Set Zip Alert')
 from ZipAlertInsertOrUpdateStream as s 
 left outer join ZipAlert as alertTable 
-select s.zipcode as zipcode, s.count as current_count, (s.count / coalesce(alertTable.current_count, cast(1, 'long'))) > 2 as on_alert 
+select s.zipcode as zipcode, s.count as current_count, (s.count / coalesce(alertTable.current_count, cast(1, 'long'))) % 2 == 0 as on_alert 
 update or 
 insert into ZipAlert for current events 
 	on ZipAlert.zipcode == zipcode;
