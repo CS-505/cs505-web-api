@@ -33,6 +33,8 @@ services:
 
   siddhi:
     image: siddhiio/siddhi-tooling:5.1.0
+    env_file:
+      - .env
     ports:
       - 9390:9390
     command: -Dconfig=/artifacts/configurations.yaml

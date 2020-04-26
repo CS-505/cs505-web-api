@@ -2,7 +2,7 @@
 @App:description('Trackers COVID 19 Cases')
 @App:statistics(reporter = "console")
 
-@source(type = 'rabbitmq', uri = "amqp://student:student01@128.163.202.61/patient_feed", exchange.name = "patient_data", exchange.type = "topic", routing.key = "patient.info", 
+@source(type = 'rabbitmq', uri = "amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}/${RABBITMQ_VIRTUAL_HOST}", exchange.name = "${RABBITMQ_EXCHANGE_NAME}", exchange.type = "topic", routing.key = "${RABBITMQ_ROUTING_KEY}", 
 	@map(type = 'json'))
 define stream PatientStream (first_name string, last_name string, mrn string, zip_code string, patient_status_code string);
 
@@ -31,7 +31,7 @@ insert into UpdatePatientAndHospital;
 
 @info(name = 'Seek Treatment Patients')
 from PatientStream[patient_status_code == '3' or patient_status_code == '5']#rdbms:query('DATABASE', 'hospital_id string', "SELECT COALESCE((SELECT hospital_id FROM hospital_data JOIN zipcode_distance ON hospital_zip = zip_to WHERE zip_from = ? AND beds_available > 0 ORDER BY distance ASC LIMIT 1), '-1') as hospital_id", zip_code)
-select mrn, hospital_id, 1 as is_positive 
+select mrn, hospital_id, ifThenElse(patient_status_code == '3', -1, 1) as is_positive 
 insert into UpdatePatientAndHospital;
 
 @info(name = 'Stay Home Patients')
