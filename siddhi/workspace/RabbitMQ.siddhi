@@ -24,25 +24,26 @@ select zip_code as zipcode, count() as count
 	group by zip_code 
 insert into ZipAlertInsertOrUpdateStream;
 
- 
-
-@info(name = 'CriticalPatients')
-from PatientStream[patient_status_code == '6']#rdbms:query('DATABASE', 'hospital_id string', 'SELECT hospital_id FROM hospital_data LIMIT 1') 
+@info(name = 'Critical Patients')
+from PatientStream[patient_status_code == '6']#rdbms:query('DATABASE', 'hospital_id string', "SELECT COALESCE((SELECT hospital_id FROM hospital_data JOIN zipcode_distance ON hospital_zip = zip_to WHERE zip_from = ? AND beds_available > 0 ORDER BY trauma_level DESC, distance ASC LIMIT 1), '-1') as hospital_id", zip_code)  
 select mrn, hospital_id, 1 as is_positive 
 insert into UpdatePatientAndHospital;
 
-@info(name = 'SeekTreatmentPatients')
-from PatientStream[patient_status_code == '3' or patient_status_code == '5']#rdbms:query('DATABASE', 'hospital_id string', 'SELECT hospital_id FROM hospital_data LIMIT 1') 
+@info(name = 'Seek Treatment Patients')
+from PatientStream[patient_status_code == '3' or patient_status_code == '5']#rdbms:query('DATABASE', 'hospital_id string', "SELECT COALESCE((SELECT hospital_id FROM hospital_data JOIN zipcode_distance ON hospital_zip = zip_to WHERE zip_from = ? AND beds_available > 0 ORDER BY distance ASC LIMIT 1), '-1') as hospital_id", zip_code)
 select mrn, hospital_id, 1 as is_positive 
 insert into UpdatePatientAndHospital;
 
-@info(name = 'StayHomePatients')
-from PatientStream[patient_status_code == '1' or patient_status_code == '2' or patient_status_code == '4' or patient_status_code == '0'] 
-select mrn, '0' as location_code, ifThenElse(patient_status_code == '1' or patient_status_code == '4', 0, 1) as is_positive 
+@info(name = 'Stay Home Patients')
+from PatientStream[patient_status_code == '0' or patient_status_code == '1' or patient_status_code == '2' or patient_status_code == '4'] 
+select mrn, '0' as location_code, 
+ifThenElse(patient_status_code == '1' or patient_status_code == '4', 0, -- 1 and 4 tested negative
+ifThenElse(patient_status_code == '2', 1, -- 2 tested positive
+-1)) as is_positive -- 0 is untested
 insert into Patient;
 
-@info(name = 'query')
-from UpdatePatientAndHospital[mrn != ''] 
+@info(name = 'Insert Patient')
+from UpdatePatientAndHospital
 select mrn, hospital_id as location_code, is_positive 
 insert into Patient;
 
@@ -55,7 +56,6 @@ insert into ZipAlert for current events
 	on ZipAlert.zipcode == zipcode;
 
  
-
 @info(name = 'Update Hospital Count')
 from UpdatePatientAndHospital as s 
 join Hospital as h 
