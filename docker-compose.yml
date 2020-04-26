@@ -46,3 +46,5 @@ services:
 
   siddhi-runner:
     build: ./siddhi/
+    env_file:
+      - .env
