@@ -1,0 +1,7 @@
+Return an Team information
+---
+tags:
+  - Management
+responses:
+  200:
+    description: Team Informartion

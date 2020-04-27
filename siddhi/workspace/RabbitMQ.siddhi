@@ -1,0 +1,65 @@
+@App:name('RabbitMQ')
+@App:description('Trackers COVID 19 Cases')
+@App:statistics(reporter = "console")
+
+@source(type = 'rabbitmq', uri = "amqp://${RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@${RABBITMQ_HOST}/${RABBITMQ_VIRTUAL_HOST}", exchange.name = "${RABBITMQ_EXCHANGE_NAME}", exchange.type = "topic", routing.key = "${RABBITMQ_ROUTING_KEY}", 
+	@map(type = 'json'))
+define stream PatientStream (first_name string, last_name string, mrn string, zip_code string, patient_status_code string);
+
+@store(type = 'rdbms', datasource = "DATABASE", table.name = "zip_alert")
+@index("zipcode")
+define table ZipAlert (zipcode string, current_count long, on_alert bool);
+
+@store(type = 'rdbms', datasource = "DATABASE", table.name = "patient_data")
+@index("mrn")
+define table Patient (mrn string, location_code string, is_positive int);
+
+@store(type = 'rdbms', datasource = "DATABASE", table.name = "hospital_data")
+@index("hospital_id")
+define table Hospital (hospital_id string, beds_available int);
+
+@info(name = 'ZipAlertWindowQuery')
+from PatientStream#window.timeBatch(15 sec) 
+select zip_code as zipcode, count() as count 
+	group by zip_code 
+insert into ZipAlertInsertOrUpdateStream;
+
+@info(name = 'Critical Patients')
+from PatientStream[patient_status_code == '6']#rdbms:query('DATABASE', 'hospital_id string', "SELECT COALESCE((SELECT hospital_id FROM hospital_data JOIN zipcode_distance ON hospital_zip = zip_to WHERE zip_from = ? AND beds_available > 0 ORDER BY trauma_level DESC, distance ASC LIMIT 1), '-1') as hospital_id", zip_code)  
+select mrn, hospital_id, 1 as is_positive 
+insert into UpdatePatientAndHospital;
+
+@info(name = 'Seek Treatment Patients')
+from PatientStream[patient_status_code == '3' or patient_status_code == '5']#rdbms:query('DATABASE', 'hospital_id string', "SELECT COALESCE((SELECT hospital_id FROM hospital_data JOIN zipcode_distance ON hospital_zip = zip_to WHERE zip_from = ? AND beds_available > 0 ORDER BY distance ASC LIMIT 1), '-1') as hospital_id", zip_code)
+select mrn, hospital_id, ifThenElse(patient_status_code == '3', -1, 1) as is_positive 
+insert into UpdatePatientAndHospital;
+
+@info(name = 'Stay Home Patients')
+from PatientStream[patient_status_code == '0' or patient_status_code == '1' or patient_status_code == '2' or patient_status_code == '4'] 
+select mrn, '0' as location_code, 
+ifThenElse(patient_status_code == '1' or patient_status_code == '4', 0, -- 1 and 4 tested negative
+ifThenElse(patient_status_code == '2', 1, -- 2 tested positive
+-1)) as is_positive -- 0 is untested
+insert into Patient;
+
+@info(name = 'Insert Patient')
+from UpdatePatientAndHospital
+select mrn, hospital_id as location_code, is_positive 
+insert into Patient;
+
+@info(name = 'Set Zip Alert')
+from ZipAlertInsertOrUpdateStream as s 
+left outer join ZipAlert as alertTable 
+select s.zipcode as zipcode, s.count as current_count, (s.count / coalesce(alertTable.current_count, cast(1, 'long'))) % 2 == 0 as on_alert 
+update or 
+insert into ZipAlert for current events 
+	on ZipAlert.zipcode == zipcode;
+
+ 
+@info(name = 'Update Hospital Count')
+from UpdatePatientAndHospital as s 
+join Hospital as h 
+	on h.hospital_id == s.hospital_id 
+select s.hospital_id as hospital_id, h.beds_available - 1 as beds_available 
+update Hospital for current events 
+	on Hospital.hospital_id == hospital_id;

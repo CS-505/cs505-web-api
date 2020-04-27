@@ -1,0 +1,12 @@
+Report hospital patient numbers
+---
+tags:
+  - Logical and Operational
+parameters:
+  - name: id
+    in: path
+    type: int
+    description: Id of the hospital
+responses:
+  200:
+    description: Hospital Information

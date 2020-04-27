@@ -1,0 +1,50 @@
+version: "2"
+
+services:
+  server:
+    env_file:
+      - .env
+    image: python:3.7
+    working_dir: /mnt
+    restart: always
+    volumes:
+      - .:/mnt
+    depends_on:
+      - db
+    ports:
+      - 80:3000
+    command: python src/server.py
+
+  dbdata:
+    image: busybox
+    volumes:
+      - /var/lib/mysql
+
+  db:
+    env_file:
+      - .env
+    image: mysql:8.0.19
+    command: --default-authentication-plugin=mysql_native_password --secure_file_priv=""
+    ports:
+      - 3306:3306
+    volumes_from:
+      - dbdata
+    restart: always
+
+  siddhi:
+    image: siddhiio/siddhi-tooling:5.1.0
+    env_file:
+      - .env
+    ports:
+      - 9390:9390
+    command: -Dconfig=/artifacts/configurations.yaml
+    volumes:
+      - ./siddhi/configs:/artifacts
+      - ./siddhi/workspace:/home/siddhi_user/siddhi-tooling/wso2/tooling/deployment/workspace
+      - ./siddhi/jars:/home/siddhi_user/siddhi-tooling/jars
+      - ./siddhi/bundles:/home/siddhi_user/siddhi-tooling/bundles
+
+  siddhi-runner:
+    build: ./siddhi/
+    env_file:
+      - .env

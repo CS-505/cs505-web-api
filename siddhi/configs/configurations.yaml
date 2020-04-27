@@ -1,0 +1,23 @@
+dataSources:
+  - name: DATABASE
+    description: The datasource used for test database
+    jndiConfig:
+      name: jdbc/database
+    definition:
+      type: RDBMS
+      configuration:
+        jdbcUrl: "jdbc:mysql://sam246.cs.uky.edu:3306/database?useSSL=false"
+        username: "root"
+        password: "password"
+        driverClassName: com.mysql.jdbc.Driver
+        maxPoolSize: 50
+        idleTimeout: 60000
+        connectionTestQuery: SELECT 1
+        validationTimeout: 30000
+        isAutoCommit: false
+extensions:
+  - extension:
+      name: query
+      namespace: rdbms
+      properties:
+        perform.CUD.operations: true
