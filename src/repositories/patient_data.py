@@ -29,3 +29,5 @@ class PatientRepository:
         """ Count positive and negative test cases """
         neg_count = PatientData.query.filter_by(is_positive = '0').count()
         return neg_count
+
+    

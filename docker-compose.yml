@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     ports:
-      - 80:3000
+      - 8088:3000
     command: python src/server.py
 
   dbdata:
