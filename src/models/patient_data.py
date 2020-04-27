@@ -10,9 +10,9 @@ class PatientData(db.Model, BaseModel, metaclass=MetaBaseModel):
 
     __tablename__ = "patient_data"
 
-    mrn = db.Column(db.Integer(), primary_key=True)
-    location_code = db.Column(db.Integer())
-    is_positive = db.Column(db.Boolean(), nullable=True)
+    mrn = db.Column(db.String(50), nullable=False, primary_key=True)
+    location_code = db.Column(db.String(9))
+    is_positive = db.Column(db.Integer(), nullable=True)
     
     
 

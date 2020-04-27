@@ -17,4 +17,4 @@ class TestCountResource(Resource):
         pos_count = PatientRepository.count_pos()
         neg_count = PatientRepository.count_neg()
                 
-        return jsonify(positive_test=pos_count, negative_test=neg_count)
+        return jsonify(positive_test=str(pos_count), negative_test=str(neg_count))

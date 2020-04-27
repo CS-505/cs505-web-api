@@ -14,3 +14,4 @@ stop: server.stop ## Stop
 include makefiles/server.mk
 include makefiles/database.mk
 include makefiles/help.mk
+include makefiles/siddhi.mk

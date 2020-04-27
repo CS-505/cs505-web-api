@@ -30,3 +30,21 @@ services:
     volumes_from:
       - dbdata
     restart: always
+
+  siddhi:
+    image: siddhiio/siddhi-tooling:5.1.0
+    env_file:
+      - .env
+    ports:
+      - 9390:9390
+    command: -Dconfig=/artifacts/configurations.yaml
+    volumes:
+      - ./siddhi/configs:/artifacts
+      - ./siddhi/workspace:/home/siddhi_user/siddhi-tooling/wso2/tooling/deployment/workspace
+      - ./siddhi/jars:/home/siddhi_user/siddhi-tooling/jars
+      - ./siddhi/bundles:/home/siddhi_user/siddhi-tooling/bundles
+
+  siddhi-runner:
+    build: ./siddhi/
+    env_file:
+      - .env
