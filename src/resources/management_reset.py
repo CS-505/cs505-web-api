@@ -17,13 +17,21 @@ class ResetResource(Resource):
     @swag_from("../swagger/management_reset/GET.yml")
     def get():
 
-        ZipCodeRepository.reset_db()
-        HospitalRepository.reset_db()
+        #broke this out since the conditionals were affecting it
+        ZipCodeRepository.local_infile()
+
+        if HospitalRepository.is_empty() == True:
+            HospitalRepository.import_csv()
+        else:
+            HospitalRepository.reset_db()
+
+        if ZipCodeRepository.is_empty() == True:
+            ZipCodeRepository.import_csv()                 
+               
         PatientRepository.reset_db()
         ZipAlertRepository.reset_db()
-        ZipCodeRepository.import_csv()
-        HospitalRepository.import_csv()
-        
+                        
         #the assignment also asks for code 0 on failure, do we need this?
         return jsonify({"reset_status_code": "1"})
+        
 

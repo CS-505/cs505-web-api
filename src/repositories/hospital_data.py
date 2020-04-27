@@ -23,7 +23,7 @@ class HospitalRepository:
     @staticmethod
     def reset_db():
         """ Reset all data in db """
-        db.session.query(HospitalData).delete()
+        db.session.query(HospitalData).update({HospitalData.beds_available:HospitalData.beds_total})
         db.session.commit()
 
     @staticmethod
@@ -31,3 +31,11 @@ class HospitalRepository:
         """ Query a hospital by it's ID """
         hospital_record = HospitalData.query.filter_by(hospital_id = id).first()
         return hospital_record
+
+    @staticmethod
+    def is_empty():
+
+        if db.session.query(HospitalData).first() == None:
+            return True
+        else:
+            return False 
