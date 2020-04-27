@@ -5,4 +5,4 @@ siddhi.dev:
 	docker-compose up siddhi
 
 siddhi.daemon: ## Start daemon siddhi in its docker container
-	docker-compose up -d --build siddhi-runner
+	docker-compose up -d siddhi-runner
