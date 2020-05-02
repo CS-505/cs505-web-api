@@ -61,8 +61,6 @@ Locally, you can connect to your database using :
 $ make database.connect
 ```
 
-However, you will need before using this command to change the docker database container's name 
-
 This kit contains a built in database versioning using [alembic](https://pypi.python.org/pypi/alembic).
 Once you've changed your models, which should reflect your database's state, you can generate the migration, then upgrade or downgrade your database as you want. See [Commands](#commands) for more information.
 
@@ -83,8 +81,4 @@ You can check the logs in the `./server.log` file.
 
 ## Swagger
 
-Your API needs a description of it's routes and how to interact with them.
-You can easily do that with the swagger package included in the starter kit.
-Simply add a docstring to the resources of your API like in the `user` example.
-The API description will be available [here](http://127.0.0.1:3000/application/spec).
-The Swagger UI will be available [here](http://127.0.0.1:3000/apidocs/).
+The project is documented using Swagger. The API description will be available [here](http://127.0.0.1:3000/application/spec). The Swagger UI will be available [here](http://127.0.0.1:3000/apidocs/).
