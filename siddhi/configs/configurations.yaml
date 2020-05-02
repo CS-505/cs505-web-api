@@ -15,6 +15,19 @@ dataSources:
         connectionTestQuery: SELECT 1
         validationTimeout: 30000
         isAutoCommit: false
+# This is the main configuration for metrics
+metrics:
+  # Enable Metrics
+  enabled: true
+  reporting:
+    console:
+      - # The name for the Console Reporter
+        name: Console
+        # Enable Console Reporter
+        enabled: true
+        # Polling Period in seconds.
+        # This is the period for polling metrics from the metric registry and printing in the console
+        pollingPeriod: 360
 extensions:
   - extension:
       name: query
